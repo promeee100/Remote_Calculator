@@ -43,6 +43,9 @@ python client.py
 
 http://127.0.0.1:6000
 
+<img width="593" height="817" alt="image" src="https://github.com/user-attachments/assets/c24efd4c-91b6-4833-a93b-3b877ab450fa" />
+
+
 ## Features
 
 ✔ Modern UI with deep purple and hipii-blue dual-tone theme
@@ -93,4 +96,5 @@ Please read our contributing guidelines before submitting a pull request.
 
 Sanjana Tasnim Prome
 © 2025 All rights reserved.
+
 ### GitHub: https://github.com/promeee100
