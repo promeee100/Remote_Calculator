@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Remote Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  height:100vh;width:100vw;display:flex;justify-content:center;align-items:center;
+  background: linear-gradient(135deg,#4B0082,#00BFFF);
+  background-size: 400% 400%;animation: gradientBG 15s ease infinite;
+  transition:0.5s;
+}
+body.light{background:#f0f0f0;}
+@keyframes gradientBG{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+/* Splash Screen */
+#splash{
+  position:fixed;width:100%;height:100%;display:flex;justify-content:center;align-items:center;flex-direction:column;
+  background: linear-gradient(135deg,#4B0082,#00BFFF);color:white;font-size:36px;font-weight:700;z-index:10;
+  animation: splashFade 2.5s forwards;
+}
+#splash img{width:120px;margin-bottom:20px;animation:bounce 2s infinite;}
+@keyframes splashFade{0%{opacity:1;}80%{opacity:1;}100%{opacity:0;visibility:hidden;}}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);}}
+
+/* Main Calculator */
+#main{display:none;justify-content:center;align-items:center;width:100%;height:100%;}
+.calculator{
+  background: rgba(255,255,255,0.1);backdrop-filter:blur(25px);border-radius:30px;
+  padding:35px;width:380px;max-width:95%;box-shadow:0 15px 40px rgba(0,0,0,0.5);color:white;
+  animation:fadeIn 1.5s ease forwards;transition:0.5s;
+}
+body.light .calculator{background: rgba(255,255,255,0.95);color:#333;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+
+.theme-toggle{
+  float:right;cursor:pointer;font-size:16px;margin-bottom:15px;
+  background: linear-gradient(135deg,#6a0dad,#8A2BE2);color:white;
+  padding:6px 12px;border-radius:10px;border:none;transition:0.3s;
+}
+.theme-toggle:hover{transform:scale(1.05);}
+body.light .theme-toggle{background:#ccc;color:#333;}
+
+.display{
+  width:100%;height:65px;margin-bottom:20px;
+  background: rgba(0,0,0,0.25);border-radius:15px;font-size:26px;
+  padding:10px 15px;text-align:right;line-height:45px;
+  overflow-x:auto;box-shadow:0 0 20px #8A2BE2,0 0 40px #00BFFF;transition:0.5s;color:white;
+}
+body.light .display{background:#fff;color:#333;box-shadow:0 0 5px #aaa;}
+
+.buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.buttons button{
+  padding:18px;font-size:20px;border:none;border-radius:15px;cursor:pointer;transition:0.3s;
+  color:white;box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+.buttons button:hover{transform:scale(1.08);}
+.buttons button:active{transform:scale(0.95);}
+
+/* Number buttons */
+button.num{background: linear-gradient(135deg,#8A2BE2,#4B0082);}
+button.num:hover{background:#6a0dad;}
+
+/* Operator buttons */
+button.op{background: linear-gradient(135deg,#00BFFF,#1E90FF);}
+button.op:hover{background:#1E90FF;}
+
+/* Equal button */
+button.equal{background: linear-gradient(135deg,#9400D3,#4B0082);}
+button.equal:hover{background:#4B0082;}
+
+/* Clear button */
+button.clear{background:#FF1493;}
+button.clear:hover{background:#FF69B4;}
+
+/* Responsive */
+@media(max-width:450px){.calculator{padding:25px;}.buttons button{padding:15px;font-size:18px;}.display{height:55px;font-size:22px;}}
+</style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" alt="Calculator Logo">
+  Remote Calculator
+</div>
+
+<!-- Main Calculator -->
+<div id="main">
+  <div class="calculator">
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    <div id="display" class="display"></div>
+    <div class="buttons">
+      <button class="num" onclick="press('7')">7</button>
+      <button class="num" onclick="press('8')">8</button>
+      <button class="num" onclick="press('9')">9</button>
+      <button class="op" onclick="press('/')">/</button>
+
+      <button class="num" onclick="press('4')">4</button>
+      <button class="num" onclick="press('5')">5</button>
+      <button class="num" onclick="press('6')">6</button>
+      <button class="op" onclick="press('*')">*</button>
+
+      <button class="num" onclick="press('1')">1</button>
+      <button class="num" onclick="press('2')">2</button>
+      <button class="num" onclick="press('3')">3</button>
+      <button class="op" onclick="press('-')">-</button>
+
+      <button class="num" onclick="press('0')">0</button>
+      <button class="op" onclick="press('%')">%</button>
+      <button class="op" onclick="press('+')">+</button>
+      <button class="equal" onclick="calculate()">=</button>
+
+      <button class="clear" onclick="clearDisplay()" style="grid-column: span 4;">CLEAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>{document.getElementById("splash").style.display="none";document.getElementById("main").style.display="flex";},2500);
+
+const display = document.getElementById("display");
+function press(value){display.textContent+=value;}
+function clearDisplay(){display.textContent='';}
+function toggleTheme(){document.body.classList.toggle("light");}
+
+document.addEventListener('keydown',e=>{
+  const allowed=['0','1','2','3','4','5','6','7','8','9','+','-','*','/','%'];
+  if(allowed.includes(e.key)) press(e.key);
+  else if(e.key==='Enter') calculate();
+  else if(e.key==='Backspace') display.textContent=display.textContent.slice(0,-1);
+  else if(e.key.toLowerCase()==='c') clearDisplay();
+});
+
+function calculate(){
+  const input=display.textContent;
+  if(!input) return;
+  let num1='',num2='',op='';
+  for(let i=0;i<input.length;i++){
+    if(['+','-','*','/','%'].includes(input[i])){
+      num1=input.slice(0,i);num2=input.slice(i+1);op=input[i];break;
+    }
+  }
+  if(num1&&num2&&op){
+    fetch('/calculate',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({num1,num2,op})
+    }).then(res=>res.json()).then(data=>{display.textContent=data.result;});
+  }
+}
+</script>
+</body>
+</html>
